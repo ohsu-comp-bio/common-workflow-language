@@ -1,0 +1,40 @@
+class: Workflow
+label: cat multilink
+inputs:
+  - id: "#infile1"
+    type: File
+  - id: "#infile2"
+    type: File
+outputs:
+  - id: "#outfile"
+    type: File
+    connect: {"source": "#cat/outfile"}
+  - id: "#outfile_copy"
+    type: File
+    connect: {"source": "#cat/outfile"}
+steps:
+  - id: "#cat"
+    impl:
+      class: CommandLineTool
+      hints:
+        - class: DockerRequirement
+          dockerPull: ubuntu:latest
+      inputs:
+        - id: "#infiles"
+          type: {"type": "array", "items": "File"}
+          inputBinding:
+            position: 1
+      outputs:
+        - id: "#outfile"
+          type: File
+          outputBinding:
+            glob: output.txt
+      stdout: output.txt
+      baseCommand: cat
+    inputs:
+      - id: "#cat/infiles"
+        connect:
+          - {"source": "#infile1", "position": "1"}
+          - {"source": "#infile2", "position": "2"}
+    outputs:
+      - id: "#cat/outfile"

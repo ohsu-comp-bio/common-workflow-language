@@ -1,0 +1,13 @@
+class: CommandLineTool
+label: secondary files and metadata test
+hints:
+  - class: DockerRequirement
+    dockerPull: ubuntu:latest
+outputs:
+  - id: "#outfile"
+    type: File
+    outputBinding:
+      glob: output.txt
+      secondaryFiles: [".appended", "^.replaced"]
+      metadata: {"key": "val"}
+baseCommand: [/bin/bash, touch, output.txt, output.txt.appended, output.replaced]

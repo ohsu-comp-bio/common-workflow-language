@@ -1,0 +1,24 @@
+class: Workflow
+label: grep fanout
+requirements:
+  - class: WorkflowScatterRequirement
+inputs:
+  - id: "#infiles"
+    type: {"type": "array", "items": "File"}
+  - id: "#pattern"
+    type: string
+outputs:
+  - id: "#outfiles"
+    type: {"type": "array", "items": "File"}
+    connect: {"source": "#grep/outfile"}
+steps:
+  - id: "#grep"
+    impl: grep.yaml
+    inputs:
+      - id: "#grep/infile"
+        connect: {"source": "#infiles"}
+      - id: "#grep/pattern"
+        connect: {"source": "#pattern"}
+    outputs:
+      - id: "#grep/outfile"
+    scatter: "#grep/infile"

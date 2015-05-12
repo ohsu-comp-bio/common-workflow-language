@@ -1,0 +1,38 @@
+class: CommandLineTool
+label: bwa mem
+requirements:
+  - class: DockerRequirement
+    dockerPull: http://images.sbgenomics.com/rabix/bwa:latest
+  - class: ExpressionEngineRequirement
+    dockerPull: rabix/js:latest
+    id: "#js"
+inputs:
+  - id: "#reference"
+    type: File
+    inputBinding:
+      position: 1
+  - id: "#reads"
+    type:
+      type: array
+      items: File
+    inputBinding:
+      position: 2
+  - id: "#minStdMaxMin"
+    type: ["null", {"type": "array", "items": "integer"}]
+    inputBinding:
+      prefix: -I
+      separator: ","
+outputs:
+  - id: "#outfile"
+    type: File
+    outputBinding:
+      glob: "*.bam"
+stdout: output.bam
+baseCommand: [bwa, mem]
+arguments:
+  - position: 0
+    prefix: -t
+    argValue:
+      class: Expression
+      engine: "#js"
+      value: $job.allocatedResources.cpu

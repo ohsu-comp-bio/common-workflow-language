@@ -1,0 +1,37 @@
+class: CommandLineTool
+label: grep
+description: Testing only basic capabilities
+hints:
+  - class: DockerRequirement
+    dockerPull: ubuntu:latest
+inputs:
+  - id: "#infile"
+    type: File
+    inputBinding:
+      position: 2
+  - id: "#pattern"
+    type: string
+    inputBinding:
+      position: 1
+  - id: "#ignoreCase"
+    type: ["null", "boolean"]
+    inputBinding:
+      position: 0
+      prefix: -i
+  - id: "#afterContext"
+    type: ["null", "integer"]
+    inputBinding:
+      prefix: --after-context=
+      join: True
+  - id: "#beforeContext"
+    type: ["null", "integer"]
+    inputBinding:
+      prefix: -b
+outputs:
+  - id: "#outfile"
+    type: File
+    outputBinding:
+      glob: output.txt
+stdout: output.txt
+baseCommand: grep
+successCodes: [0, 1]

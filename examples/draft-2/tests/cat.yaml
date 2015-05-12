@@ -1,0 +1,17 @@
+class: CommandLineTool
+label: cat
+hints:
+  - class: DockerRequirement
+    dockerPull: ubuntu:latest
+inputs:
+  - id: "#infiles"
+    type: {"type": "array", "items": "File"}
+    inputBinding:
+      position: 1
+outputs:
+  - id: "#outfile"
+    type: File
+    outputBinding:
+      glob: output.txt
+stdout: output.txt
+baseCommand: cat

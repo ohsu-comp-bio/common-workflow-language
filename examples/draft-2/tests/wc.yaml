@@ -1,0 +1,42 @@
+class: CommandLineTool
+label: wc
+requirements:
+  - class: ExpressionEngineRequirement
+    dockerPull: rabix/js:latest
+    id: "#js"
+  - class: DockerRequirement
+    dockerPull: ubuntu:latest
+inputs:
+  - id: "#infile"
+    type: File
+  - id: "#countLines"
+    type:
+      type: enum
+      name: YesNo
+      symbols: [YES, NO]
+    inputBinding:
+      position: 0
+      prefix: -l
+      argValue:
+        class: Expression
+        engine: "#js"
+        value: $self=='YES'
+outputs:
+  - id: "#count"
+    type: integer
+    outputBinding:
+      glob: "*.count.txt"
+      loadContent: True
+      valueFrom:
+        class: Expression
+        engine: "#js"
+        value: parseInt($self.content, 10)
+stdin:
+  class: Expression
+  engine: "#js"
+  value: $job.inputs.infile.path
+stdout:
+  class: Expression
+  engine: "#js"
+  value: $job.inputs.infile.name.split('.')[0] + '.count.txt'
+baseCommand: wc

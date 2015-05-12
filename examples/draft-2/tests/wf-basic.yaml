@@ -1,0 +1,31 @@
+class: Workflow
+label: grep twice
+inputs:
+  - id: "#infile"
+    type: File
+  - id: "#pattern"
+    type: string
+outputs:
+  - id: "#outfile"
+    type: File
+    connect: {"source": "#grep2/outfile"}
+steps:
+  - id: "#grep1"
+    impl: grep.yaml
+    inputs:
+      - id: "#grep1/infile"
+        connect: {"source": "#infile"}
+      - id: "#grep1/pattern"
+        connect: {"source": "#pattern"}
+    outputs:
+      - id: "#grep1/outfile"
+
+  - id: "#grep2"
+    impl: grep.yaml
+    inputs:
+      - id: "#grep2/infile"
+        connect: {"source": "#grep1/outfile"}
+      - id: "#grep2/pattern"
+        value: findme
+    outputs:
+      - id: "#grep2/outfile"

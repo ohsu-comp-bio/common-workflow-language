@@ -1,0 +1,12 @@
+class: CommandLineTool
+label: result.cwl.json test
+hints:
+  - class: DockerRequirement
+    dockerPull: ubuntu:latest
+inputs:
+  - id: "#inp"
+    type: integer
+outputs:
+  - id: "#out"
+    type: integer
+baseCommand: [python cwl_in_out.py]

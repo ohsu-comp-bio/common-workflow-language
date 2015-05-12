@@ -1,0 +1,112 @@
+- app: grep.yaml
+  name: grep
+  inputs:
+    infile: {"class": "File", "path": "example.txt"}
+    pattern: findme
+    ignoreCase: True
+    beforeContext: 2
+    afterContext: 1
+  resources: {"cpu": 1, "mem": 512}
+  outputs:
+    outfile: {"class": "File", "name": "output.txt"}
+  cmd: "grep --after-context=1 -B 2 -i findme {input_dir}example.txt > output.txt"
+
+- app: grep.yaml
+  name: grep no vals exit code 1
+  inputs:
+    infile: {"class": "File", "path": "example.txt"}
+    pattern: cantfindme
+  resources: {"cpu": 1, "mem": 512}
+  outputs:
+    outfile: {"class": "File", "name": "output.txt"}
+  cmd: "grep findme {input_dir}example.txt > output.txt"
+
+- app: bwa.yaml
+  name: bwa mem
+  inputs:
+    reference: {"class": "File", "path": "ref.fasta"}
+    reads:
+      - {"class": "File", "path": "sample_pe1.fastq"}
+      - {"class": "File", "path": "sample_pe2.fastq"}
+  resources:
+    cpu: 2
+    mem: 2048
+  outputs:
+    outfile: {"class": "File", "name": "output.bam"}
+  cmd: "bwa mem -t 2 -I 1,2,3,4 ref.fasta {input_dir}sample_pe1.fastq {input_dir}sample_pe2.fastq > output.bam"
+
+- app: wc.yaml
+  name: wc -l
+  inputs:
+    infile: {"class": "File", "path": "example.txt"}
+    countLines: YES
+  resources: {"cpu": 1, "mem": 512}
+  outputs:
+    count: 5
+  cmd: "wc -l {input_dir}example.txt > example.count.txt"
+
+- app: secFiles.yaml
+  name: secFiles and metadata
+  resources: {"cpu": 1, "mem": 512}
+  outputs:
+    outfile:
+      class: File
+      name: output.txt
+      secondaryFiles: [".appended", "^.replaced"]
+      metadata: {"key": "val"}
+  cmd: "/bin/bash touch output.txt output.txt.appended output.replaced"
+
+- app: cwlInOut.yaml
+  name: job.cwl.json and result.cwl.json
+  resources: {"cpu": 1, "mem": 512}
+  inputs:
+    inp: 42
+  outputs:
+    out: 42
+  cmd: "python cwl_in_out.py"
+
+- app: wf-basic.yaml
+  name: wf-basic
+  inputs:
+    infile: {"class": "File", "path": "example.txt"}
+    pattern: findme
+  outputs:
+    outfile: {"class": "File", "name": "output.txt"}
+  cmd:
+    grep1: grep findme {input_dir}example.txt > output.txt
+    # grep2: grep findme output.txt > output.txt
+
+- app: wf-nested.yaml
+  name: wf-nested
+  inputs:
+    infile: {"class": "File", "path": "example.txt"}
+    pattern: findme
+  outputs:
+    outfile: {"class": "File", "name": "output.txt"}
+
+- app: wf-multilink.yaml
+  name: wf-multilink
+  inputs:
+    infile1: {"class": "File", "path": "example.txt"}
+    infile2: {"class": "File", "path": "example2.txt"}
+  outputs:
+    outfile: {"class": "File", "name": "output.txt"}
+    outfile_copy: {"class": "File", "name": "output.txt"}
+  cmd:
+    cat: cat {input_dir}example.txt example2.txt > output.txt
+
+- app: wf-fanout.yaml
+  name: wf-fanout
+  inputs:
+    infiles:
+      - {"class": "File", "path": "example.txt"}
+      - {"class": "File", "path": "example1.txt"}
+    pattern: findme
+  outputs:
+    outfiles:
+      - {"class": "File", "name": "output.txt"}
+      - {"class": "File", "name": "output.txt"}
+  cmd:
+    grep:
+      - grep findme {input_dir}example.txt > output.txt
+      - grep findme {input_dir}example1.txt > output.txt
