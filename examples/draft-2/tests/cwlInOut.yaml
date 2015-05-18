@@ -5,8 +5,12 @@ hints:
     dockerPull: ubuntu:latest
 inputs:
   - id: "#inp"
-    type: integer
+    type: int
+  - id: "#script"
+    type: "File"
+    inputBinding:
+      position: 1
 outputs:
   - id: "#out"
-    type: integer
-baseCommand: [python cwl_in_out.py]
+    type: int
+baseCommand: [python]

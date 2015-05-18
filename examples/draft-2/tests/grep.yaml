@@ -19,12 +19,12 @@ inputs:
       position: 0
       prefix: -i
   - id: "#afterContext"
-    type: ["null", "integer"]
+    type: ["null", "int"]
     inputBinding:
       prefix: --after-context=
       join: True
   - id: "#beforeContext"
-    type: ["null", "integer"]
+    type: ["null", "int"]
     inputBinding:
       prefix: -b
 outputs:

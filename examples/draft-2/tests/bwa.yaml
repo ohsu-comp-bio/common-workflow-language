@@ -4,8 +4,9 @@ requirements:
   - class: DockerRequirement
     dockerPull: http://images.sbgenomics.com/rabix/bwa:latest
   - class: ExpressionEngineRequirement
-    dockerPull: rabix/js:latest
     id: "#js"
+    expressionCommand: cwl-js-engine
+    requirements: {"class": "DockerRequirement", "dockerPull": "rabix/js"}
 inputs:
   - id: "#reference"
     type: File
@@ -18,7 +19,7 @@ inputs:
     inputBinding:
       position: 2
   - id: "#minStdMaxMin"
-    type: ["null", {"type": "array", "items": "integer"}]
+    type: ["null", {"type": "array", "items": "int"}]
     inputBinding:
       prefix: -I
       separator: ","
@@ -35,4 +36,4 @@ arguments:
     argValue:
       class: Expression
       engine: "#js"
-      value: $job.allocatedResources.cpu
+      script: $job.allocatedResources.cpu

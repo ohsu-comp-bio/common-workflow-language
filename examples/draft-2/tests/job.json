@@ -1,0 +1,14 @@
+{
+  "allocatedResources": {
+    "mem": 512, 
+    "cpu": 1
+  }, 
+  "inputs": {
+    "inp": 42, 
+    "script": {
+      "path": "cwl_in_out.py", 
+      "class": "File"
+    }
+  }, 
+  "app": "cwlInOut.yaml"
+}

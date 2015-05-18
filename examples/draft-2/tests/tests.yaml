@@ -61,9 +61,10 @@
   resources: {"cpu": 1, "mem": 512}
   inputs:
     inp: 42
+    script: {"class": "File", "path": "cwl_in_out.py"}
   outputs:
     out: 42
-  cmd: "python cwl_in_out.py"
+  cmd: "python {input_dir}cwl_in_out.py"
 
 - app: wf-basic.yaml
   name: wf-basic

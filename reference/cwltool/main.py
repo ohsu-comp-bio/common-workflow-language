@@ -46,11 +46,19 @@ def main():
     try:
         job = t.job(from_url(args.job_order), basedir, use_container=(not args.no_container))
         if args.conformance_test:
-            a = {"args": job.command_line}
+            job.try_make_job()
+            a = {
+                'args': job.command_line,
+                'cmd': ' '.join(job.command_line),
+                'outputs': {},
+                'input_dir': '',
+            }
             if job.stdin:
                 a["stdin"] = job.stdin
+                a['cmd'] += '< %s' % job.stdin
             if job.stdout:
                 a["stdout"] = job.stdout
+                a['cmd'] += '> %s' % job.stdout
             if job.generatefiles:
                 a["generatefiles"] = job.generatefiles
             print json.dumps(a)

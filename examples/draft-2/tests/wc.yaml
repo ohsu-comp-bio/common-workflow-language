@@ -2,8 +2,9 @@ class: CommandLineTool
 label: wc
 requirements:
   - class: ExpressionEngineRequirement
-    dockerPull: rabix/js:latest
     id: "#js"
+    expressionCommand: cwl-js-engine
+    requirements: {"class": "DockerRequirement", "dockerPull": "rabix/js"}
   - class: DockerRequirement
     dockerPull: ubuntu:latest
 inputs:
@@ -20,23 +21,23 @@ inputs:
       argValue:
         class: Expression
         engine: "#js"
-        value: $self=='YES'
+        script: $self=='YES'
 outputs:
   - id: "#count"
-    type: integer
+    type: int
     outputBinding:
       glob: "*.count.txt"
       loadContent: True
       valueFrom:
         class: Expression
         engine: "#js"
-        value: parseInt($self.content, 10)
+        script: parseInt($self.content, 10)
 stdin:
   class: Expression
   engine: "#js"
-  value: $job.inputs.infile.path
+  script: $job.inputs.infile.path
 stdout:
   class: Expression
   engine: "#js"
-  value: $job.inputs.infile.name.split('.')[0] + '.count.txt'
+  script: $job.inputs.infile.name.split('.')[0] + '.count.txt'
 baseCommand: wc

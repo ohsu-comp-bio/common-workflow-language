@@ -3,6 +3,7 @@ label: secondary files and metadata test
 hints:
   - class: DockerRequirement
     dockerPull: ubuntu:latest
+inputs: []
 outputs:
   - id: "#outfile"
     type: File

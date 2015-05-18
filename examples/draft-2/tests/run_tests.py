@@ -1,6 +1,4 @@
 import os
-import sys
-import copy
 import json
 import logging
 
@@ -11,7 +9,7 @@ __doc__ = """
 CWL test suite runner.
 
 Usage:
-  run_tests.py [--tools-only] [--cmd-only] <executor> [<requirement>...]
+  run_tests.py [--tools-only] [--cmd-only] <executable> [<requirement>...]
 
 """
 
@@ -41,14 +39,19 @@ class Test(object):
         return self.data['name']
 
     def check_result(self, result, cmd_only=False):
+        assert 'outputs' in result, 'Result does not contain "outputs" field.'
+        assert 'input_dir' in result, 'Result does not contain "input_dir" field.'
         if not cmd_only:
             assert self.data['outputs'] == self._clean_out_files(result['outputs'])
         if not self.data.get('cmd'):
             return
         if self.app_type != 'CommandLineTool':
             return  # TODO: Workflow cmd matching
-        expected = self.data.get('cmd').replace('{input_dir}', result['input_dir'])
-        assert expected == result['cmd']
+        expected = self.data['cmd'].replace('{input_dir}', result['input_dir'])
+        actual = result.get('cmd')
+        print 'Expected cmd:', expected
+        print 'Actual cmd:', actual
+        assert expected == actual, 'Command lines differ'
 
     def _clean_out_files(self, obj):
         if not isinstance(obj, (dict, list)):
@@ -63,16 +66,18 @@ class Test(object):
 def run_test(test, executable, cmd_only=False):
     job = {
         'app': test.data['app'],
-        'inputs': test.data['inputs'],
-        'allocatedResources': test.data['resources'],
+        'inputs': test.data.get('inputs', {}),
+        'allocatedResources': test.data.get('resources', {}),
     }
     with open('job.json', 'w') as fp:
         json.dump(job, fp, indent=2)
-    retcode = os.system('%s %s job.json > result.json' % (executable, '--cmd-only' if cmd_only else ''))
-    assert retcode, 'Program exit code: %s' % retcode
+    cmd = '%s %s %s job.json > result.json' % (executable, test.data['app'], '--cmd-only' if False else '')
+    print 'Running', cmd
+    retcode = os.system(cmd)
+    assert not retcode, 'Program exit code: %s' % retcode
     with open('result.json') as fp:
         result = json.load(fp)
-    assert test.check_result(result)
+    test.check_result(result, cmd_only=cmd_only)
 
 
 def main():
