@@ -51,7 +51,7 @@ class Test(object):
         actual = result.get('cmd')
         print 'Expected cmd:', expected
         print 'Actual cmd:', actual
-        assert expected == actual, 'Command lines differ'
+        assert expected == actual, 'Command lines differ.'
 
     def _clean_out_files(self, obj):
         if not isinstance(obj, (dict, list)):
@@ -60,7 +60,11 @@ class Test(object):
             return [self._clean_out_files(item) for item in obj]
         if obj.get('class') != 'File':
             return {k: self._clean_out_files(v) for k, v in obj.iteritems()}
-        return {'class': 'File', 'name': os.path.basename(obj['path'])}
+        return {
+            'class': 'File',
+            'name': os.path.basename(obj['path']),
+            'secondaryFiles': obj.get('secondaryFiles'),
+        }
 
 
 def run_test(test, executable, cmd_only=False):
@@ -71,7 +75,7 @@ def run_test(test, executable, cmd_only=False):
     }
     with open('job.json', 'w') as fp:
         json.dump(job, fp, indent=2)
-    cmd = '%s %s %s job.json > result.json' % (executable, test.data['app'], '--cmd-only' if False else '')
+    cmd = '%s %s %s job.json > result.json' % (executable, test.data['app'], '--cmd-only' if cmd_only else '')
     print 'Running', cmd
     retcode = os.system(cmd)
     assert not retcode, 'Program exit code: %s' % retcode
