@@ -27,10 +27,18 @@ class NormDict(dict):
     def __contains__(self, key):
         return super(NormDict, self).__contains__(self.normalize(key))
 
-def expand_url(url, base_url):
-    split = urlparse.urlparse(url)
+def expand_url(url, base_url, scoped=False):
+    split = urlparse.urlsplit(url)
     if split.scheme:
         return url
+    elif scoped and not split.fragment:
+        splitbase = urlparse.urlsplit(base_url)
+        frg = ""
+        if splitbase.fragment:
+            frg = splitbase.fragment + "/" + split.path
+        else:
+            frg = split.path
+        return urlparse.urlunsplit((splitbase.scheme, splitbase.netloc, splitbase.path, splitbase.query, frg))
     else:
         return urlparse.urljoin(base_url, url)
 
@@ -68,7 +76,9 @@ class Loader(object):
         if not isinstance(ref, basestring):
             raise ValueError("Must be string: `%s`" % str(ref))
 
-        url = expand_url(ref, base_url)
+        url = expand_url(ref, base_url, scoped=(obj is not None))
+
+        log.debug("Expanded %s to %s", ref, url)
 
         # Has this reference been loaded already?
         if url in self.idx:
