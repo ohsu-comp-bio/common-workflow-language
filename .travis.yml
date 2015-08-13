@@ -1,0 +1,11 @@
+language: ruby
+
+sudo: false
+
+before_install:
+  - mkdir -p $HOME/.local/bin
+  - wget -O $HOME/.local/bin/avro-tools.jar http://apache.osuosl.org/avro/avro-1.7.7/java/avro-tools-1.7.7.jar
+  - echo "#!/bin/bash" > $HOME/.local/bin/avro-tools
+  - echo "exec java -jar $HOME/.local/bin/avro-tools.jar \"\$@\"" >> $HOME/.local/bin/avro-tools
+  - chmod a+x $HOME/.local/bin/avro-tools
+  - cat /home/travis/.local/bin/avro-tools

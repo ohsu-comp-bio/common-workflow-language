@@ -1,6 +1,8 @@
 Common Workflow Language
 ========================
 
+![travis-ci](https://travis-ci.org/ohsu-computational-biology/common-workflow-language.svg)
+
 The Common Workflow Language (CWL) is an informal, multi-vendor working group
 consisting of various organizations and individuals that have an interest in
 portability of data analysis workflows.  Our goal is to create specifications

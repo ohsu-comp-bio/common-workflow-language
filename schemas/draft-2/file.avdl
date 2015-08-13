@@ -1,0 +1,15 @@
+@namespace("cwl.draft-2")
+protocol File {
+
+  enum FileClass {
+    FILE
+  }
+
+  record File {
+    FileClass fileClass;
+    string path;
+    union { null, string } checksum;
+    union { null, long } size;
+    union { null, array<File> } secondaryFiles;
+  }
+}
