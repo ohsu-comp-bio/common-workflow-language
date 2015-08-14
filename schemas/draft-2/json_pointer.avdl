@@ -1,0 +1,7 @@
+@namespace("cwl.draft-2")
+protocol JsonPointer {
+
+  enum JsonPointer {
+    JSONPOINTER
+  }
+}

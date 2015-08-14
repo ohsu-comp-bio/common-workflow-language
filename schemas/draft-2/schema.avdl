@@ -1,0 +1,67 @@
+@namespace("cwl.draft-2")
+protocol Schema {
+
+  import idl "datatype.avdl";
+  import idl "binding.avdl";
+
+  /** A schema defines a parameter type. **/
+  record Schema {
+
+    /** The data type of this parameter. **/
+    union { Datatype, Schema, string, array<union { Datatype, Schema, string }> } type;
+
+    /** When `type` is `record`, defines the fields of the record. **/
+    union { null, array<Schema> } fields;
+
+    /** When `type` is `enum`, defines the set of valid symbols. **/
+    union { null, array<string> } symbols;
+
+    /** When `type` is `array`, defines the type of the array elements. **/
+    union { null, Datatype, Schema, string, array<union { Datatype, Schema, string }> } items;
+
+    /** When `type` is `map`, defines the value type for the key/value pairs. **/
+    union { null, Datatype, Schema, string, array<union { Datatype, Schema, string }> } values;
+  }
+
+  /** A schema defines a parameter type. **/
+  record InputSchema {
+
+    /** The data type of this parameter. **/
+    union { Datatype, InputSchema, string, array<union { Datatype, InputSchema, string }> } type;
+
+    /** When `type` is `record`, defines the fields of the record. **/
+    union { null, array<InputSchema> } fields;
+
+    /** When `type` is `enum`, defines the set of valid symbols. **/
+    union { null, array<string> } symbols;
+
+    /** When `type` is `array`, defines the type of the array elements. **/
+    union { null, Datatype, InputSchema, string, array<union { Datatype, InputSchema, string }> } items;
+
+    /** When `type` is `map`, defines the value type for the key/value pairs. **/
+    union { null, Datatype, InputSchema, string, array<union { Datatype, InputSchema, string }> } values;
+
+    /** Describes how to handle a value in the input object convert it into a
+        concrete form for execution, such as command line parameters. **/
+    union { null, Binding } inputBinding;
+  }
+
+  /** A schema defines a parameter type. **/
+  record OutputSchema {
+
+    /** The data type of this parameter. **/
+    union { Datatype, OutputSchema, string, array<union { Datatype, OutputSchema, string }> } type;
+
+    /** When `type` is `record`, defines the fields of the record. **/
+    union { null, array<OutputSchema> } fields;
+
+    /** When `type` is `enum`, defines the set of valid symbols. **/
+    union { null, array<string> } symbols;
+
+    /** When `type` is `array`, defines the type of the array elements. **/
+    union { null, Datatype, OutputSchema, string, array<union { Datatype, OutputSchema, string }> } items;
+
+    /** When `type` is `map`, defines the value type for the key/value pairs. **/
+    union { null, Datatype, OutputSchema, string, array<union { Datatype, OutputSchema, string }> } values;
+  }
+}

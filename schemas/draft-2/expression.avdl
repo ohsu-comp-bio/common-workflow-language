@@ -1,0 +1,20 @@
+@namespace("cwl.draft-2")
+protocol Expression {
+
+  import idl "json_pointer.avdl";
+
+  /** Define an expression that will be evaluated and used to modify the
+      behavior of a tool or workflow.  See [Expressions](#expressions) for more
+      information about expressions and
+      [ExpressionEngineRequirement](#expressionenginerequirement) for
+      information on how to define a expression engine. **/
+  record Expression {
+
+    /** Either `cwl:JsonPointer` or a reference to an
+        ExpressionEngineRequirement defining which engine to use. **/
+    union { JsonPointer, string } engine;
+
+    /** The code to be executed by the expression engine. **/
+    string script;
+  }
+}
