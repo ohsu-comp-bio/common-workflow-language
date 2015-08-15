@@ -3,13 +3,17 @@ require 'json'
 
 require 'rspec/expectations'
 
-def load_protocol(file)
-  output = `avro-tools idl schemas/#{file}`
-  Avro::Protocol.parse(output)
-end
+RSpec.configure do |config|
 
-def find_type(protocol, type_name)
-  protocol.types.find{|type| type.name == type_name}
+  # Add a "protocols" setting where we will cache loading of AVDL schemas.
+  config.add_setting :protocols
+
+  config.before(:suite) do
+    RSpec.configuration.protocols = Hash.new do |hash, key|
+      output = `avro-tools idl schemas/#{key}`
+      hash[key] = Avro::Protocol.parse(output)
+    end
+  end
 end
 
 RSpec::Matchers.define :be_valid_with do |schema|
@@ -24,4 +28,12 @@ RSpec::Matchers.define :be_valid_with do |schema|
   failure_message_when_negated do |actual|
     "expected that test data would not be valid according to provided schema"
   end
+end
+
+def load_protocol(file)
+  RSpec.configuration.protocols[file]
+end
+
+def find_type(protocol, type_name)
+  protocol.types.find{|type| type.name == type_name}
 end

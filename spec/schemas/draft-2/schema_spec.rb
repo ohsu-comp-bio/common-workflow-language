@@ -2,7 +2,11 @@ require 'spec_helper'
 
 context 'Draft 2' do
 
-  describe 'Schema Protocol', file: 'draft-2/schema.avdl' do
+  let(:protocol) do
+    load_protocol('draft-2/common_workflow_language.avdl')
+  end
+
+  describe 'Schema Protocol' do
 
     # A collection of shared examples that are used for Schema, InputSchema,
     # and OutputSchema.
@@ -91,10 +95,6 @@ context 'Draft 2' do
         end
 
       end
-    end
-
-    let(:protocol) do |example|
-      load_protocol example.metadata[:file]
     end
 
     describe 'Schema record' do
