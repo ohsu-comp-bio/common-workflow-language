@@ -1,0 +1,163 @@
+@namespace("cwl.draft-2")
+protocol ProcessRequirement {
+
+  import idl "environment.avdl";
+  import idl "expression.avdl";
+  import idl "file.avdl";
+  import idl "schema.avdl";
+
+  /** A process requirement declares a prerequisite that may or must be
+      fulfilled before executing a process.  See [`Process.hints`](#process) and
+      [`Process.requirements`](#process).
+
+      Process requirements are the primary mechanism for specifying extensions
+      to the CWL core specification. **/
+  record ProcessRequirement {
+
+    /** The specific requirement type. **/
+    string class;
+  }
+
+  /** Indicates that a workflow component should be run in a
+      [Docker](http://docker.com) container, and specifies how to fetch or build
+      the image.
+
+      If a CommandLineTool lists `DockerRequirement` under
+      `hints` or `requirements`, it may (or must) be run in the specified Docker
+      container.
+
+      The platform must first acquire or install the correct Docker image as
+      specified by `dockerPull`, `dockerImport`, `dockerLoad` or `dockerFile`.
+
+      The platform must execute the tool in the container using `docker run`
+      with the appropriate Docker image and tool command line.
+
+      The workflow platform may provide input files and the designated output
+      directory through the use of volume bind mounts.  The platform may rewrite
+      file paths in the input object to correspond to the Docker bind mounted
+      locations.
+
+      When running a tool contained in Docker, the workflow platform must not
+      assume anything about the contents of the Docker container, such as the
+      presence or absence of specific software, except to assume that the
+      generated command line represents a valid command within the runtime
+      environment of the container.
+
+      ## Interaction with other requirements
+
+      If [EnvVarRequirement](#envvarrequirement) is specified alongside a
+      DockerRequirement, the environment variables must be provided to Docker
+      using `--env` or `--env-file` and interact with the container's preexisting
+      environment as defined by Docker. **/
+  record DockerRequirement {
+
+    /** See Process::ProcessRequirement#class. **/
+    string class;
+
+    /** Specify a Docker image to retrieve using `docker pull`." **/
+    union {null, string} dockerPull;
+
+    /** Specify a HTTP URL from which to download a Docker image using
+        `docker load`. **/
+    union {null, string} dockerLoad;
+
+    /** Supply the contents of a Dockerfile which will be built using
+        `docker build`. **/
+    union {null, string} dockerDockerfile;
+
+    /** Provide HTTP URL to download and gunzip a Docker images using 
+        `docker import`. **/
+    union {null, string} dockerImport;
+
+    /** The image id that will be used for `docker run`.  May be a
+        human-readable image name or the image identifier hash.  May be skipped
+        if `dockerPull` is specified, in which case the `dockerPull` image id
+        must be used. **/
+    union {null, string} dockerImageId;
+
+    /** Set the designated output directory to a specific location inside the
+        Docker container. **/
+    union {null, string} dockerOutputDirectory;
+  }
+
+  /** Indicates that the workflow platform must support nested workflows in
+      the `run` field of (WorkflowStep)(#workflowstep). **/
+  record SubworkflowFeatureRequirement {
+
+    /** See Process::ProcessRequirement#class. **/
+    string class;
+  }
+
+  /** Define a list of files that must be created by the workflow
+      platform in the designated output directory prior to executing the command
+      line tool.  See `FileDef` for details. **/
+  record CreateFileRequirement {
+
+    /** See Process::ProcessRequirement#class. **/
+    string class;
+
+    /** The list of files **/
+    array<FileDef> fileDef;
+  }
+
+  /** Define a list of environment variables which will be set in the
+    execution environment of the tool.  See `EnvironmentDef` for details. **/
+  record EnvVarRequirement {
+
+    /** See Process::ProcessRequirement#class. **/
+    string class;
+
+    /** The list of environment variables. **/
+    array<EnvironmentDef> envDef;
+  }
+
+  /* Indicates that the workflow platform must support the `scatter` and
+    `scatterMethod` fields of [WorkflowStep](#workflowstep). **/
+  record ScatterFeatureRequirement {
+
+    /** See Process::ProcessRequirement#class. **/
+    string class;
+  }
+
+  /** This field consists of an array of type definitions which must be used
+      when interpreting the `inputs` and `outputs` fields.  When a symbolic
+      type is encountered that is not in [`Datatype`](#datatype), the
+      implementation must check if the type is defined in `schemaDefs` and use
+      that definition.  If the type is not found in `schemaDefs`, it is an
+      error.  The entries in `schemaDefs` must be processed in the order listed
+      such that later schema definitions may refer to earlier schema
+      definitions. **/
+  record SchemaDefRequirement {
+
+    /** See Process::ProcessRequirement#class. **/
+    string class;
+
+    /** The list of type definitions. **/ 
+    array<SchemaDef> types;
+  }
+
+  /** Define an expression engine, as described in
+      [Expressions](#expressions). **/
+  record ExpressionEngineRequirement {
+
+    /** See Process::ProcessRequirement#class. **/
+    string class;
+
+    /** Used to identify the expression engine in the `engine` field of
+        Expressions. **/
+    string id;
+
+    /** Requirements to run this expression engine, such as DockerRequirement
+        for specifying a container to run the engine. **/
+    union { null, array<ProcessRequirement> } requirements;
+
+    /** The command line to invoke the expression engine. **/
+    union { null, string, array<string> } engineCommand;
+
+    /** Additional configuration or code fragments that will also be passed to
+        the expression engine.  The semantics of this field are defined by the
+        underlying expression engine.  Intended for uses such as providing
+        function definitions that will be called from CWL expressions. **/
+    union { null, array<string> } engineConfig;
+  }
+}

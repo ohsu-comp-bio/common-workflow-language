@@ -1,0 +1,14 @@
+@namespace("cwl.draft-2")
+protocol CommonWorkflowLanguage {
+  import idl "binding.avdl";
+  import idl "datatype.avdl";
+  import idl "environment.avdl";
+  import idl "expression.avdl";
+  import idl "file.avdl";
+  import idl "json_pointer.avdl";
+  import idl "parameter.avdl";
+  import idl "process.avdl";
+  import idl "process_requirement.avdl";
+  import idl "schema.avdl";
+  import idl "workflow.avdl";
+}

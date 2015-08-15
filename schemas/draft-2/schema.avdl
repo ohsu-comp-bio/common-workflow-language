@@ -1,8 +1,8 @@
 @namespace("cwl.draft-2")
 protocol Schema {
 
-  import idl "datatype.avdl";
   import idl "binding.avdl";
+  import idl "datatype.avdl";
 
   /** A schema defines a parameter type. **/
   record Schema {
@@ -23,22 +23,43 @@ protocol Schema {
     union { null, Datatype, Schema, string, array<union { Datatype, Schema, string }> } values;
   }
 
+  record SchemaDef {
+
+    /** See Schema::Schema.type. **/
+    union { Datatype, Schema, string, array<union { Datatype, Schema, string }> } type;
+
+    /** See Schema::Schema.fields. **/
+    union { null, array<Schema> } fields;
+
+    /** See Schema::Schema.symbols. **/
+    union { null, array<string> } symbols;
+
+    /** See Schema::Schema.items. **/
+    union { null, Datatype, Schema, string, array<union { Datatype, Schema, string }> } items;
+
+    /** See Schema::Schema.values. **/
+    union { null, Datatype, Schema, string, array<union { Datatype, Schema, string }> } values;
+
+    /** The type name being defined. **/
+    string name;
+  }
+
   /** A schema defines a parameter type. **/
   record InputSchema {
 
-    /** The data type of this parameter. **/
+    /** See Schema::Schema#type. **/ 
     union { Datatype, InputSchema, string, array<union { Datatype, InputSchema, string }> } type;
 
-    /** When `type` is `record`, defines the fields of the record. **/
+    /** See Schema::Schema#fields. **/ 
     union { null, array<InputSchema> } fields;
 
-    /** When `type` is `enum`, defines the set of valid symbols. **/
+    /** See Schema::Schema#symbols. **/ 
     union { null, array<string> } symbols;
 
-    /** When `type` is `array`, defines the type of the array elements. **/
+    /** See Schema::Schema#items. **/ 
     union { null, Datatype, InputSchema, string, array<union { Datatype, InputSchema, string }> } items;
 
-    /** When `type` is `map`, defines the value type for the key/value pairs. **/
+    /** See Schema::Schema#values. **/ 
     union { null, Datatype, InputSchema, string, array<union { Datatype, InputSchema, string }> } values;
 
     /** Describes how to handle a value in the input object convert it into a
@@ -49,19 +70,63 @@ protocol Schema {
   /** A schema defines a parameter type. **/
   record OutputSchema {
 
-    /** The data type of this parameter. **/
+    /** See Schema::Schema#type. **/ 
     union { Datatype, OutputSchema, string, array<union { Datatype, OutputSchema, string }> } type;
 
-    /** When `type` is `record`, defines the fields of the record. **/
+    /** See Schema::Schema#fields. **/ 
     union { null, array<OutputSchema> } fields;
 
-    /** When `type` is `enum`, defines the set of valid symbols. **/
+    /** See Schema::Schema#symbols. **/ 
     union { null, array<string> } symbols;
 
-    /** When `type` is `array`, defines the type of the array elements. **/
+    /** See Schema::Schema#items. **/ 
     union { null, Datatype, OutputSchema, string, array<union { Datatype, OutputSchema, string }> } items;
 
-    /** When `type` is `map`, defines the value type for the key/value pairs. **/
+    /** See Schema::Schema#values. **/ 
     union { null, Datatype, OutputSchema, string, array<union { Datatype, OutputSchema, string }> } values;
+  }
+
+  record CommandInputSchema {
+
+    /** See Schema::InputSchema#type. **/ 
+    union { Datatype, CommandInputSchema, string, array<union { Datatype, CommandInputSchema, string }> } type;
+
+    /** See Schema::InputSchema#fields. **/ 
+    union { null, array<CommandInputSchema> } fields;
+
+    /** See Schema::InputSchema#symbols. **/ 
+    union { null, array<string> } symbols;
+
+    /** See Schema::InputSchema#items. **/ 
+    union { null, Datatype, CommandInputSchema, string, array<union { Datatype, CommandInputSchema, string }> } items;
+
+    /** See Schema::InputSchema#values. **/ 
+    union { null, Datatype, CommandInputSchema, string, array<union { Datatype, CommandInputSchema, string }> } values;
+
+    /** See Schema::InputSchema#inputBinding. **/ 
+    union { null, CommandLineBinding } inputBinding;
+  }
+
+  record CommandOutputSchema {
+    /** See Schema::OutputSchema#type. **/ 
+    union { Datatype, CommandOutputSchema, string, array<union { Datatype, CommandOutputSchema, string }> } type;
+
+    /** See Schema::OutputSchema#fields. **/ 
+    union { null, array<CommandOutputSchema> } fields;
+
+    /** See Schema::OutputSchema#symbols. **/ 
+    union { null, array<string> } symbols;
+
+    /** See Schema::OutputSchema#items. **/ 
+    union { null, Datatype, CommandOutputSchema, string, array<union { Datatype, CommandOutputSchema, string }> } items;
+
+    /** See Schema::OutputSchema#values. **/ 
+    union { null, Datatype, CommandOutputSchema, string, array<union { Datatype, CommandOutputSchema, string }> } values;
+
+    /** Describes how to handle the concrete outputs of a process step (such as
+        files created by a program) and describe them in the process output
+        parameter. **/
+    union { null, CommandOutputBinding } outputBinding;
+
   }
 }

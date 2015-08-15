@@ -1,0 +1,156 @@
+@namespace("cwl.draft-2")
+protocol Parameter {
+
+  import idl "binding.avdl";
+  import idl "datatype.avdl";
+  import idl "schema.avdl";
+
+  /** Define an input or output parameter to a process. **/
+  record Parameter {
+    
+    /** Specify valid types of data that may be assigned to this parameter. **/
+    union { null, Datatype, Schema, string, array<union { Datatype, Schema, string }> } type;
+    
+    /** A short, human-readable label of this parameter object. **/
+    union { null, string } label;
+
+    /** A long, human-readable description of this parameter object. **/
+    union { null, string } description;
+
+    /** Currently only applies if `type` is `File`.  A value of `true`
+        indicates that the file is read or written sequentially without
+        seeking.  An implementation may use this flag to indicate whether it is
+        valid to stream file contents using a named pipe.  Default: `false`. **/
+    boolean streamable = false;
+
+    /** The default value for this parameter if not provided in the input
+        object. **/
+    union { null, Any } default; 
+  }
+
+  /** Extends Parameter. **/
+  record InputParameter {
+
+    /** See Parameter#Parameter.type. **/ 
+    union { null, Datatype, Schema, string, array<union { Datatype, Schema, string }> } type;
+    
+    /** See Parameter#Parameter.label. **/ 
+    union { null, string } label;
+
+    /** See Parameter#Parameter.description. **/ 
+    union { null, string } description;
+
+    /** See Parameter#Parameter.streamable. **/ 
+    boolean streamable = false;
+
+    /** See Parameter#Parameter.default. **/ 
+    union { null, Any } default; 
+
+    /** See Parameter#Parameter.id. **/ 
+    string id;
+
+    /** Describes how to handle the inputs of a process and convert them
+        into a concrete form for execution, such as command line
+        parameters. **/
+    union { null, Binding } inputBinding;
+  }
+
+  /** Extends Parameter. **/
+  record OutputParameter {
+    
+    /** See Parameter#Parameter.type. **/ 
+    union { null, Datatype, Schema, string, array<union { Datatype, Schema, string }> } type;
+    
+    /** See Parameter#Parameter.label. **/ 
+    union { null, string } label;
+
+    /** See Parameter#Parameter.description. **/ 
+    union { null, string } description;
+
+    /** See Parameter#Parameter.streamable. **/ 
+    boolean streamable = false;
+
+    /** See Parameter#Parameter.default. **/ 
+    union { null, Any } default; 
+  }
+
+  /** An input parameter for a CommandLineTool. Extends InputParameter. **/
+  record CommandInputParameter {
+
+    /** See Parameter#InputParameter.type. **/ 
+    union { null, Datatype, CommandInputSchema, string, array<union { Datatype, CommandInputSchema, string }> } type;
+    
+    /** See Parameter#InputParameter.label. **/ 
+    union { null, string } label;
+
+    /** See Parameter#InputParameter.description. **/ 
+    union { null, string } description;
+
+    /** See Parameter#InputParameter.streamable. **/ 
+    boolean streamable = false;
+
+    /** See Parameter#InputParameter.default. **/ 
+    union { null, Any } default; 
+
+    /** See Parameter#InputParameter.id. **/ 
+    string id;
+
+    /** See Parameter#InputParameter.inputBinding. **/ 
+    union { null, CommandLineBinding } inputBinding;
+  }
+
+  /** An output parameter for a CommandLineTool. Extends OutputParameter. **/
+  record CommandOutputParameter {
+
+    /** See Parameter#OutputParameter.type. **/ 
+    union { null, Datatype, CommandOutputSchema, string, array<union { Datatype, CommandOutputSchema, string }> } type;
+    
+    /** See Parameter#OutputParameter.label. **/ 
+    union { null, string } label;
+
+    /** See Parameter#OutputParameter.description. **/ 
+    union { null, string } description;
+
+    /** See Parameter#OutputParameter.streamable. **/ 
+    boolean streamable = false;
+
+    /** See Parameter#OutputParameter.default. **/ 
+    union { null, Any } default; 
+    
+    /** Describes how to handle the concrete outputs of a process step (such as
+        files created by a program) and describe them in the process output
+        parameter. **/
+    union { null, CommandOutputBinding } outputBinding; 
+  }
+
+  /** Describe an output parameter of a workflow.  The parameter must be
+      connected to one or more parameters defined in the workflow that will
+      provide the value of the output parameter. Extends OutputParameter. **/
+  record WorkflowOutputParameter {
+
+    /** See Parameter#OutputParameter.type. **/ 
+    union { null, Datatype, OutputSchema, string, array<union { Datatype, OutputSchema, string }> } type;
+    
+    /** See Parameter#OutputParameter.label. **/ 
+    union { null, string } label;
+
+    /** See Parameter#OutputParameter.description. **/ 
+    union { null, string } description;
+
+    /** See Parameter#OutputParameter.streamable. **/ 
+    boolean streamable = false;
+
+    /** See Parameter#OutputParameter.default. **/ 
+    union { null, Any } default; 
+
+    /** Specifies one or more workflow parameters that will provide this output
+        value. **/
+    union { null, string, array<string> } source;
+
+    /** The method to use to merge multiple inbound links into a single array.
+        If not specified, the default method is "merge_nested". **/
+    union { null, LinkMergeMethod } linkMerge;
+
+
+  }
+}

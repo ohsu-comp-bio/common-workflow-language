@@ -1,0 +1,32 @@
+@namespace("cwl.draft-2")
+protocol Environment {
+
+  import idl "expression.avdl";
+
+  /** Define an environment variable that will be set in the runtime environment
+      by the workflow platform when executing the command line tool.  May be the
+      result of executing an expression, such as getting a parameter from
+      input. **/
+  record EnvVarRequirement {
+
+  /** The environment variable name. **/
+  string envName;
+
+  /** The environment variable value. **/
+  union { string, Expression } envValue;
+
+  }
+
+  /** Define an environment variable that will be set in the runtime environment
+      by the workflow platform when executing the command line tool.  May be the
+      result of executing an expression, such as getting a parameter from
+      input. **/
+  record EnvironmentDef {
+
+    /** The environment variable name. **/
+    string envName;
+
+    /** The environment variable value. **/
+    union { string, Expression } envValue;
+  }
+}
